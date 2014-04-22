@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>GetPlayWeb</title>
+        <h:outputStylesheet name="css/cssLayout.css"/>
+    </h:head>
+
+    <h:body class="center_content">
+
+        <ui:composition template="Template/GetPlayStart.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <h:outputLabel class="logtitulos" value="Welcome to"/>
+                    <p></p>
+                    <img src="resources/images/logo_branco.png" width="400" alt="logo_branco"/>
+                    <p></p>
+
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputLabel class="textLabel" value="Email "/>
+                        <h:inputText label="Email" value="#{loginMb.email}"/>
+
+                        <h:outputLabel class="textLabel" value="Password "/>
+                        <h:inputSecret label="Password" value="#{loginMb.password}"/>
+
+                        <h:commandButton type="submit"  
+                                         value="Login"
+                                         class="button"
+                                         action="#{loginMb.confirmaLogin}"/>
+
+                        <h:commandButton type="submit"  
+                                         value="Register" 
+                                         class="button"
+                                         action="registo.xhtml"/>
+
+                    </h:panelGrid>
+
+                    <p></p>
+                    <h:outputLabel value="#{loginMb.errorMessageExperience}" style="color: #e33b06; font-weight: bold"/>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

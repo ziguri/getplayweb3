@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <ui:insert name="metadata"/>
+        <f:event type="preRenderView" listener="#{loginMb.verifyUser()}" />
+        <title>List Music</title>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="Template/GetPlayTemp.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+                    <f:view>
+                        <h:form>
+                            <h1><h:outputText value="All Musics"/></h1>
+                            <h:outputLabel value="YOUR PLAYLIST´S:"/>
+
+                            <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">
+                                <f:selectItems value="#{generalController.myPlaylists()}" var="p" itemLabel="#{p.name}"/>
+                            </h:selectOneMenu>
+
+                            <h:dataTable value="#{requestMusicMb.musicList}" var="music" border="1" cellpadding="2" cellspacing="2" rules="all" 
+
+                                         styleClass="dataTable"
+                                         headerClass="dataTableTitle"
+                                         >
+
+                                <h:column>
+
+                                    <f:facet name="header" class="dataTableTitle">TITLE</f:facet>
+                                        #{music.title}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header" class="dataTableTitle">ARTIST</f:facet>
+                                        #{music.artist}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header" class="dataTableTitle">ALBUM</f:facet>
+                                        #{music.album}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header" class="dataTableTitle">YEAR</f:facet>
+                                        #{music.music_year}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header" class="dataTableTitle">PATH</f:facet>
+                                        #{music.music_path}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header" class="dataTableTitle">USER</f:facet>
+                                        #{music.user.name}
+                                </h:column>
+
+                                <h:column>      
+                                    <f:facet name="header" class="dataTableTitle">ADD TO PLAYLIST</f:facet>
+                                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
+                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                                    </h:commandButton>
+                                </h:column>
+
+                                <h:column>
+                                    <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
+                                </h:column>
+
+                            </h:dataTable>
+                            <br/>
+                            <p></p>
+
+                        </h:form>
+                    </f:view>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

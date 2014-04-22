@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <ui:insert name="metadata"/>
+        <f:event type="preRenderView" listener="#{loginMb.verifyUser()}" />
+        <title>Create Music</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="Template/GetPlayTemp.xhtml">
+
+            <ui:define name="content">
+
+                <h:form id="form" enctype="multipart/form-data" >
+                    <h1><h:outputText value="Insert New Music"/></h1>
+                    <br></br>
+                    <h:panelGrid columns="2" cellspacing="10">
+                        <h:outputLabel value="Title"/>
+                        <h:inputText label="Title" value="#{requestMusicMb.music.title}" />
+
+                        <h:outputLabel value="Artist"/>
+                        <h:inputText label="Artist" value="#{requestMusicMb.music.artist}"/>
+
+                        <h:outputLabel value="Album"/>
+                        <h:inputText label="Album" value="#{requestMusicMb.music.album}"/>
+
+                        <h:outputLabel value="Year"/>
+                        <h:inputText label="Year" value="#{requestMusicMb.music.music_year}"/>
+
+                        <h:outputLabel value="Path"/>
+                        <h:inputFile id="f" required="true" requiredMessage="Please choose a file" value="#{requestMusicMb.file1}" />
+                        <h:message for="f" errorClass="errorMessage" />
+                        <p></p>
+
+                        <h:commandButton type="submit"  value="Save" action="#{requestMusicMb.addMusic()}"  />
+
+                    </h:panelGrid>
+
+                    <p></p>
+                    <h:outputLabel value="#{requestMusicMb.message}" style="color: #e33b06; font-weight: bold"/>
+
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

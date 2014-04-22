@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <h:outputStylesheet name="./css/styles.css"/>
+        <h:outputStylesheet name="./images/styles_1.css"/>
+        <h:outputScript library="js" name="jquery-latest.min.js" />
+        <h:outputScript library="js" name="menu_jquery.js" />
+        <title>GetPlay Template</title>
+
+        <script>
+
+            var ajaxRequest;
+
+            function ajaxRequestChanged() {
+                if (ajaxRequest.readyState === 4) {
+                    var texto = ajaxRequest.responseText;
+                    document.getElementById("topten").innerHTML = texto;
+                    setTimeout(makeAjaxRequest, 5000);
+                }
+            }
+
+            function makeAjaxRequest() {
+                ajaxRequest = new XMLHttpRequest();
+                ajaxRequest.onreadystatechange = ajaxRequestChanged;
+                ajaxRequest.open("GET", "/GetPlayWeb/topmusic?topten=topten", true);
+                ajaxRequest.send(null);
+                return false;
+            }
+
+        </script>
+
+    </h:head>
+
+    <h:body onload="makeAjaxRequest()">
+
+        <div id="logo">
+            <img src="resources/images/logo_branco.png" width="150" alt="logo_branco"/>
+
+        </div>
+
+        <div id="top">
+            <ui:insert name="top" >
+                <h:form class="logform">
+                    <h:outputLabel value="Welcome "/>
+                    <h:outputLabel value="#{logged.user.name}"/>
+                    <br></br>
+                    <h:commandButton value="Logout" action="#{logged.logout()}"/>
+
+                    <h:commandButton value="Edit"  
+                                     action="editUser.xhtml"/>
+
+                </h:form>
+
+                <div id="topmenu">
+                    <div id='cssmenutop'>
+                        <ul>
+
+                            <li><a href='listAllMusics.xhtml'><span>All Musics</span></a></li>
+                            <li><a href='PopularMusics.xhtml'><span>Popular Music</span></a></li>
+                            <li><a href='listMyMusics.xhtml'><span>My Musics</span></a></li>
+                            <li><a href='listMyPlaylist.xhtml'><span>My Playlist´s</span></a></li>
+                            <li><a href='createPlaylist.xhtml'><span>Add Playlist</span></a></li>
+                            <li class='last'><a href='createMusic.xhtml'><span>Add Music</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h:form style="margin-left: 15px;" class="searchform">
+                    <h:inputText id="search" value="#{searchMb.word}" style="width: 140px;
+                                 -webkit-box-shadow:0 0 10px rgba(225, 225, 225, 1);
+                                 -moz-box-shadow:0 0 10px rgba(225, 225, 225, 1);
+                                 box-shadow:0 0 10px rgba(225, 225, 225, 1); margin-left: -17px;" />
+                    <h:commandButton image="resources/images/search.png" action="#{searchMb.search}" style="margin-left: 10px; margin-bottom: -5px;"/>
+                    <br></br>
+                    <h:selectOneRadio value="#{searchMb.option}" style="color: #FFFFFF; text-align: center; margin-left: -20px;">
+                        <f:selectItem itemValue="Title"  itemLabel="Title" />
+                        <f:selectItem itemValue="Artist" itemLabel="Artist" />   
+                        <f:selectItem itemValue="ArTi" itemLabel="Both" />   
+                    </h:selectOneRadio>
+                    <br></br>
+                </h:form>
+                <p></p>
+            </ui:insert>
+        </div>
+
+        <div>
+            <div id="left">
+                <ui:insert name="left">
+                    <div id='cssmenu'>
+                        <ul>
+                            <li class='active'><a href='listAllMusics.xhtml'><span>Home</span></a></li>
+
+                            <li class='has-sub'><a href='#'><span>Playlist</span></a>
+                                <ul>
+                                    <li> <a href='createPlaylist.xhtml'><span>Insert Playlist</span></a></li>
+                                    <li class='last'><a href='listMyPlaylist.xhtml'><span>My Playlists</span></a></li>
+                                </ul>
+                            </li>
+
+                            <li class='has-sub'><a href='#'><span>Music</span></a>
+                                <ul>
+                                    <li><a href='createMusic.xhtml'><span>Insert Music</span></a></li>
+                                    <li class='last'><a href='listMyMusics.xhtml'><span>My Musics</span></a></li>
+                                    <li class='last'><a href='listAllMusics.xhtml'><span>All Musics</span></a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <br/>
+                    
+                    <h1>
+                        <h:outputLabel value="TOP 10" class="titleTopTen"/>
+                    </h1>
+      
+                    <div  id="topten" class="dataTableTopTen">  
+                    </div>
+                    <br/>
+                    <li> <a href='CreatePlaylistTopTen.xhtml'><span>Create Playlist Top 10</span></a></li>
+
+
+                </ui:insert>
+            </div>
+            <div id="content" class="left_content">
+                <ui:insert name="content">Content</ui:insert>
+            </div>
+        </div>
+        <!--        <div id="bottom">
+                    <ui:insert name="bottom">Bottom</ui:insert>
+                </div>-->
+
+    </h:body>
+
+</html>

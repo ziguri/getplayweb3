@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <ui:insert name="metadata"/>
+        <f:event type="preRenderView" listener="#{loginMb.verifyUser()}" />
+        <title>List Playlist</title>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="Template/GetPlayTemp.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+                    <f:view>
+                        <h:form>
+                            <h1><h:outputText value="My Playlist's"/></h1>
+                            <h:dataTable value="#{editPlaylistController.play}" var="playlist" border="1" cellpadding="2" cellspacing="2" rules="all" styleClass="dataTable"
+                                         headerClass="dataTableTitle">
+
+                                <h:column>
+                                    <f:facet name="header">TITLE
+
+                                        <h:commandButton image="resources/images/arrow_top.png" action="#{editPlaylistController.sortTable('Title','Asc')}" style="width: 15px" />
+                                        <h:commandButton image="resources/images/arrow_down.png" action="#{editPlaylistController.sortTable('Title','Desc')}" style="width: 15px"/>
+
+                                    </f:facet>
+                                    #{playlist.name}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">CREATION DATE
+
+                                        <h:commandButton image="resources/images/arrow_top.png" action="#{editPlaylistController.sortTable('Creation','Asc')}" style="width: 15px" />
+                                        <h:commandButton image="resources/images/arrow_down.png" action="#{editPlaylistController.sortTable('Creation','Desc')}" style="width: 15px"/>
+
+                                    </f:facet>
+                                    #{playlist.creationDate}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">SIZE
+
+                                        <h:commandButton image="resources/images/arrow_top.png" action="#{editPlaylistController.sortTable('Size','Asc')}" style="width: 15px" />
+                                        <h:commandButton image="resources/images/arrow_down.png" action="#{editPlaylistController.sortTable('Size','Desc')}" style="width: 15px"/>
+
+                                    </f:facet>
+                                    #{playlist.size}
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">VIEW/EDIT/DELETE</f:facet>
+                                    <h:commandButton type="submit"
+                                                     value="View" 
+                                                     action="#{generalController.addMusicToSelectedPlaylist()}" >
+                                        <f:setPropertyActionListener target="#{generalController.playlistSelected}" value="#{playlist}" />
+
+
+                                    </h:commandButton>
+
+                                    <h:commandButton type="submit"
+                                                     value="Edit" 
+                                                     action="#{generalController.editSelectedPlaylist()}" >
+                                        <f:setPropertyActionListener target="#{generalController.playlistSelected}" value="#{playlist}" />
+
+
+                                    </h:commandButton>
+
+                                    <h:commandButton  type="submit"
+                                                      value="Delete" 
+                                                      action="#{editPlaylistController.destroy}" />
+
+                                </h:column>
+
+                            </h:dataTable>
+                            <br/>
+                            <p></p>
+                            <h:outputLabel value="#{requestPlaylistMb.message}" style="color: #e33b06; font-weight: bold"/>
+                        </h:form>
+                    </f:view>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

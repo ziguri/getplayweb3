@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <ui:insert name="metadata"/>
+        <f:event type="preRenderView" listener="#{loginMb.verifyUser()}" />
+        <title>Create Playlist</title>
+    </h:head>
+    
+    <h:body>
+        <ui:composition template="Template/GetPlayTemp.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+                    <h1><h:outputText value="Create Playlist Top 10"/></h1>
+                    <br></br>
+                    <h:panelGrid columns="2" cellspacing="10">
+
+                        <h:outputLabel value="Playlist Name"/>                 
+                        <h:inputText label="Name" value="#{requestPlaylistMb.playlist.name}" />
+
+                        <h:commandButton type="submit"  value="Create Playlist Top 10" action="#{requestPlaylistMb.createPlaylistFromServleTopTen()}"  />
+
+                    </h:panelGrid>
+                    <p></p>
+                    <h:outputLabel value="#{requestPlaylistMb.message}" style="color: #e33b06; font-weight: bold"/>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
