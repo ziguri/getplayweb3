@@ -30,7 +30,7 @@
             function makeAjaxRequest() {
                 ajaxRequest = new XMLHttpRequest();
                 ajaxRequest.onreadystatechange = ajaxRequestChanged;
-                ajaxRequest.open("GET", "/GetPlayWeb/topmusic?topten=topten", true);
+                ajaxRequest.open("GET", "/GetPlayWeb3/topmusic?topten=topten", true);
                 ajaxRequest.send(null);
                 return false;
             }
@@ -117,11 +117,11 @@
                     </div>
 
                     <br/>
-                    
+
                     <h1>
                         <h:outputLabel value="TOP 10" class="titleTopTen"/>
                     </h1>
-      
+
                     <div  id="topten" class="dataTableTopTen">  
                     </div>
                     <br/>
