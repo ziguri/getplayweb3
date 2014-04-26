@@ -5,7 +5,12 @@
  */
 package pt.uc.dei.aor.projeto4.grupog.managebeans;
 
+import WebServiceSoap.LyricWikiPortType_Stub;
+import WebServiceSoap.LyricWiki_Impl;
+import WebServiceSoap.LyricsResult;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
@@ -17,6 +22,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 import javax.inject.Named;
+import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.PlaylistFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
@@ -37,6 +43,8 @@ public class GeneralController implements Converter {
     private LoggedUserMb loggedUser;
     @Inject
     private MusicFacade musicEjb;
+    @Inject
+    private LyricFacade lyricFacade;
     private Playlist playlistSelected;
     private Music musicSelected;
     private Integer musicIdSelected;
@@ -402,6 +410,33 @@ public class GeneralController implements Converter {
      */
     public void setPlaylistIdSelected(Integer playlistIdSelected) {
         this.playlistIdSelected = playlistIdSelected;
+    }
+
+    public String seeLyric(Music m) {
+
+        return lyricFacade.getLyric(m, loggedUser.getUser());
+    }
+
+    private static LyricWikiPortType_Stub createProxy() {
+        return (LyricWikiPortType_Stub) (new LyricWiki_Impl().getLyricWikiPort());
+    }
+
+    /**
+     * Return the result using SOAP web service.
+     *
+     * @return
+     */
+    public String getResult() {
+
+        try {
+            LyricWikiPortType_Stub lw = createProxy();
+            LyricsResult lr = lw.getSong(musicSelected.getArtist(), musicSelected.getTitle());
+            return lr.getLyrics();
+        } catch (Exception ex) {
+            Logger.getLogger(GeneralController.class.getName()).log(Level.SEVERE, null, ex);
+            return "Is empty";
+        }
+
     }
 
 }

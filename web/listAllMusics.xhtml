@@ -5,106 +5,121 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<!--<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">-->
 
-
+<!--
     <h:head>
         <ui:insert name="metadata"/>
         <f:event type="preRenderView" listener="#{loginMb.verifyUser()}" />
         <title>List Music</title>
-    </h:head>
+    </h:head>-->
 
-    <h:body>
+<!--    <h:body>-->
 
-        <ui:composition template="Template/GetPlayTemp.xhtml">
+<ui:composition template="Template/GetPlayTemp.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
 
-            <ui:define name="content">
 
-                <h:form>
-                    <f:view>
-                        <h:form>
-                            <h1><h:outputText value="All Musics"/></h1>
-                            <h:outputLabel value="YOUR PLAYLIST´S:"/>
+    <ui:define name="content">
 
-                            <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">
-                                <f:selectItems value="#{generalController.myPlaylists()}" var="p" itemLabel="#{p.name}"/>
-                            </h:selectOneMenu>
+        <!--                    <f:view>-->
+        <h:form>
+            <h1><h:outputText value="All Musics"/></h1>
+            <h:outputLabel value="YOUR PLAYLIST´S:"/>
 
-                            <h:dataTable value="#{requestMusicMb.musicList}" var="music" border="1" cellpadding="2" cellspacing="2" rules="all" 
+            <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">
+                <f:selectItems value="#{generalController.myPlaylists()}" var="p" itemLabel="#{p.name}"/>
+            </h:selectOneMenu>
 
-                                         styleClass="dataTable"
-                                         headerClass="dataTableTitle"
-                                         >
+            <h:dataTable value="#{requestMusicMb.musicList}" var="music" border="1" cellpadding="2" cellspacing="2" rules="all" 
 
-                                <h:column>
+                         styleClass="dataTable"
+                         headerClass="dataTableTitle"
+                         >
 
-                                    <f:facet name="header" class="dataTableTitle">TITLE</f:facet>
-                                        #{music.title}
-                                </h:column>
+                <h:column>
 
-                                <h:column>
-                                    <f:facet name="header" class="dataTableTitle">ARTIST</f:facet>
-                                        #{music.artist}
-                                </h:column>
+                    <f:facet name="header" class="dataTableTitle">TITLE</f:facet>
+                        #{music.title}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header" class="dataTableTitle">ALBUM</f:facet>
-                                        #{music.album}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header" class="dataTableTitle">ARTIST</f:facet>
+                        #{music.artist}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header" class="dataTableTitle">YEAR</f:facet>
-                                        #{music.music_year}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header" class="dataTableTitle">ALBUM</f:facet>
+                        #{music.album}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header" class="dataTableTitle">PATH</f:facet>
-                                        #{music.music_path}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header" class="dataTableTitle">YEAR</f:facet>
+                        #{music.music_year}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header" class="dataTableTitle">USER</f:facet>
-                                        #{music.user.name}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header" class="dataTableTitle">PATH</f:facet>
+                        #{music.music_path}
+                </h:column>
 
-                                <h:column>      
-                                    <f:facet name="header" class="dataTableTitle">ADD TO PLAYLIST</f:facet>
-                                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </h:commandButton>
-                                </h:column>
+                <h:column>
+                    <f:facet name="header" class="dataTableTitle">USER</f:facet>
+                        #{music.user.name}
+                </h:column>
 
-                                <h:column>
-                                    <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
-                                </h:column>
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">ADD TO PLAYLIST</f:facet>
+                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
+                </h:column>
 
-                                <h:column>      
-                                    <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
-                                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </h:commandButton>
-                                </h:column>
+                <h:column>
+                    <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
+                </h:column>
 
-                                <h:column>      
-                                    <f:facet name="header" class="dataTableTitle">restFull</f:facet>
-                                    <p:commandButton image="resources\images\redIcon.png" type="submit" ajax="false" action="#{generalController.saveMusic()}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </p:commandButton>
-                                </h:column>
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
+                    <p:commandButton rendered="#{!empty generalController.seeLyric(music)}" ajax="false" icon="ui-icon-circle-check" oncomplete="PF('soap').show()"  style="background-color: #ffffff" action="#{generalController.saveMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </p:commandButton>
 
-                            </h:dataTable>
-                            <br/>
-                            <p></p>
+                    <p:commandButton rendered="#{empty generalController.seeLyric(music)}" ajax="true" icon="ui-icon-circle-close" onclick="PF('soap').show()" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </p:commandButton>
 
-                        </h:form>
-                    </f:view>
+                </h:column>
 
-                </h:form>
-            </ui:define>
-        </ui:composition>
-    </h:body>
-</html>
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">REST</f:facet>
+                    <h:commandButton rendered="#{!empty generalController.seeLyric(music)}" image="resources\images\iconGreen.png" type="submit" style="background-color: #ffffff" action="#{generalController.saveMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
+                    <h:commandButton rendered="#{empty generalController.seeLyric(music)}" image="resources\images\redIcon.png" type="submit" style="background-color: #ffffff" action="#{generalController.saveMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
+                </h:column>
+
+            </h:dataTable>
+            <p:commandButton icon="ui-icon-circle-close" action="teste.xhtml"/>
+            <br/>
+            <p></p>
+            <p:dialog header="Create Paj Edition" widgetVar="soap" modal="true" height="auto" width="auto">
+                <h:inputText value="teste"/>
+
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+<!--    </h:body>-->
+
