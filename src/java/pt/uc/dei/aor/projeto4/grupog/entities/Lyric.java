@@ -10,13 +10,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  *
  * @author Zueb LDA
  */
 @Entity
+@Table(name = "lyric")
+@NamedQueries({
+    @NamedQuery(name = "appuser.findLyric", query = "SELECT l.fullLyric FROM Lyric l WHERE l.music=:mus and l.user=:us"),})
 public class Lyric implements Serializable {
 
     private static final long serialVersionUID = 1L;

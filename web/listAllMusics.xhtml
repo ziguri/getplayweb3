@@ -8,7 +8,8 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 
     <h:head>
@@ -79,6 +80,20 @@ and open the template in the editor.
 
                                 <h:column>
                                     <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
+                                </h:column>
+
+                                <h:column>      
+                                    <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
+                                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
+                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                                    </h:commandButton>
+                                </h:column>
+
+                                <h:column>      
+                                    <f:facet name="header" class="dataTableTitle">restFull</f:facet>
+                                    <p:commandButton image="resources\images\redIcon.png" type="submit" ajax="false" action="#{generalController.saveMusic()}" >
+                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                                    </p:commandButton>
                                 </h:column>
 
                             </h:dataTable>
