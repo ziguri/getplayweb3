@@ -14,6 +14,11 @@ import java.util.logging.Logger;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Lyric;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
@@ -119,6 +124,19 @@ public class LyricController implements Serializable {
             Logger.getLogger(GeneralController.class.getName()).log(Level.SEVERE, null, ex);
             return "Lyric not found in http://lyrics.wikia.com/";
         }
+
+    }
+
+    public String restResult(Music m) {
+
+        WebTarget target = ClientBuilder.newClient().target("http://lyrics.wikia.com/api.php");
+        Invocation invocation = target.queryParam("func", "getSong").queryParam("fmt", "text")
+                .queryParam("artist", m.getArtist()).queryParam("song", m.getTitle()).request(MediaType.TEXT_PLAIN).buildGet();
+        Response response = invocation.invoke();
+
+        this.musicSelected = m;
+        this.lyric = response.readEntity(String.class);
+        return lyric;
 
     }
 
