@@ -90,7 +90,7 @@ and open the template in the editor.
                 <h:column>      
                     <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
                     <!--                    COM LETRA-->
-                    <p:commandButton rendered="#{!empty lyricController.seeEditableLyric(music)}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('soapW').show()" update=":soapLyWith" style="background-color: #45DB00"/>
+                    <p:commandButton rendered="#{!empty lyricController.seeLyric(music)}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('soapW').show()" update=":soapLyWith" style="background-color: #45DB00"/>
                     <!--                    SEM LETRA-->
                     <p:commandButton rendered="#{empty lyricController.seeLyric(music)}" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.soapResult(music)}" oncomplete="PF('soap').show()" update=":soapLy" style="background-color: #F53D0A"/>
 
@@ -118,7 +118,7 @@ and open the template in the editor.
                 <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/>
                 <br></br>
                 <p:commandButton ajax="false" value="Cancel" onclick="PF('soapW').hide();"/>
-                <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.addLyric()}"/>
+                <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.editLyric()}"/>
 
             </p:dialog>
         </h:form>

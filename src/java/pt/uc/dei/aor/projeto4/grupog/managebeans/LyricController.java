@@ -75,18 +75,14 @@ public class LyricController implements Serializable {
     }
 
     public String seeLyric(Music m) {
-        if (m != null) {
-            try {
-                this.lyric = lyricFacade.getLyric(m, loggedUser.getUser());
-                return lyric;
-            } catch (Exception e) {
-
-                return "";
-            }
-        } else {
+        try {
+            this.lyric = lyricFacade.getLyric(m, loggedUser.getUser());
+            return lyric;
+        } catch (Exception e) {
 
             return "";
         }
+
     }
 
     public String seeEditableLyric(Music m) {
