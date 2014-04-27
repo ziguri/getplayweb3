@@ -53,4 +53,31 @@ public class LyricFacade extends AbstractFacade<Lyric> {
 
     }
 
+    public Lyric getObjectLyric(Music m, AppUser u) {
+
+        Query q = em.createNamedQuery("appuser.findObjectLyric");
+        q.setParameter("mus", m).setParameter("us", u);
+
+        try {
+            return (Lyric) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public void addLyric(String lyric, Music m, AppUser u) {
+
+        Lyric l = new Lyric();
+        l.setFullLyric(lyric);
+        l.setMusic(m);
+        l.setUser(u);
+        this.create(l);
+    }
+
+    public void editLyric(Lyric l, String fullLyric) {
+
+        l.setFullLyric(fullLyric);
+        this.edit(l);
+    }
+
 }

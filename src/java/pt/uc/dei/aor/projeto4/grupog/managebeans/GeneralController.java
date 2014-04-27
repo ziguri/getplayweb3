@@ -5,12 +5,7 @@
  */
 package pt.uc.dei.aor.projeto4.grupog.managebeans;
 
-import WebServiceSoap.LyricWikiPortType_Stub;
-import WebServiceSoap.LyricWiki_Impl;
-import WebServiceSoap.LyricsResult;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
@@ -52,6 +47,7 @@ public class GeneralController implements Converter {
     private List<Playlist> itemsPlays;
     private DataModel<Music> musics;
     private String messageErrorMusic;
+    private String lyric;
 
     public GeneralController() {
     }
@@ -403,6 +399,22 @@ public class GeneralController implements Converter {
         return playlistIdSelected;
     }
 
+    public LyricFacade getLyricFacade() {
+        return lyricFacade;
+    }
+
+    public void setLyricFacade(LyricFacade lyricFacade) {
+        this.lyricFacade = lyricFacade;
+    }
+
+    public String getLyric() {
+        return lyric;
+    }
+
+    public void setLyric(String lyric) {
+        this.lyric = lyric;
+    }
+
     /**
      * Set selected Playlist ID
      *
@@ -410,33 +422,6 @@ public class GeneralController implements Converter {
      */
     public void setPlaylistIdSelected(Integer playlistIdSelected) {
         this.playlistIdSelected = playlistIdSelected;
-    }
-
-    public String seeLyric(Music m) {
-
-        return lyricFacade.getLyric(m, loggedUser.getUser());
-    }
-
-    private static LyricWikiPortType_Stub createProxy() {
-        return (LyricWikiPortType_Stub) (new LyricWiki_Impl().getLyricWikiPort());
-    }
-
-    /**
-     * Return the result using SOAP web service.
-     *
-     * @return
-     */
-    public String getResult() {
-
-        try {
-            LyricWikiPortType_Stub lw = createProxy();
-            LyricsResult lr = lw.getSong(musicSelected.getArtist(), musicSelected.getTitle());
-            return lr.getLyrics();
-        } catch (Exception ex) {
-            Logger.getLogger(GeneralController.class.getName()).log(Level.SEVERE, null, ex);
-            return "Is empty";
-        }
-
     }
 
 }
