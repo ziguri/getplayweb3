@@ -27,7 +27,7 @@ public class MusicFacade extends AbstractFacade<Music> {
 
     @Inject
     private PlaylistFacade playlistEjb;
-    @PersistenceContext(unitName = "GetPlayWebPU")
+    @PersistenceContext(unitName = "GetPlayWebPU3")
     private EntityManager em;
 
     @Override
@@ -48,7 +48,7 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @param rest
      * @param soap
      */
-    public void addMusic(Music m, AppUser u, String path, int rest, int soap) {
+    public void addMusic(Music m, AppUser u, String path, boolean rest, boolean soap) {
         try {
             m.setRestLyric(rest);
             m.setSoapLyric(soap);

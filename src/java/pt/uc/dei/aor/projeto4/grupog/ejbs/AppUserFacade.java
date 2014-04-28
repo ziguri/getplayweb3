@@ -24,7 +24,7 @@ import pt.uc.dei.aor.projeto4.grupog.exceptions.DuplicateEmailException;
 @Stateless
 public class AppUserFacade extends AbstractFacade<AppUser> {
 
-    @PersistenceContext(unitName = "GetPlayWebPU")
+    @PersistenceContext(unitName = "GetPlayWebPU3")
     private EntityManager em;
 
     @Override

@@ -113,8 +113,8 @@ public class RequestMusicMb implements Serializable {
             outputStream.close();
             inputStream.close();
 
-            int rest = lyricFacade.restExist(music.getArtist(), music.getTitle());
-            int soap = lyricFacade.soapExist(music.getArtist(), music.getTitle());
+            boolean rest = lyricFacade.restExist(music.getArtist(), music.getTitle());
+            boolean soap = lyricFacade.soapExist(music.getArtist(), music.getTitle());
 
             music_ejb.addMusic(music, user.getUser(), musicPath, rest, soap);
 

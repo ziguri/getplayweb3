@@ -32,7 +32,7 @@ import pt.uc.dei.aor.projeto4.grupog.managebeans.GeneralController;
 @Stateless
 public class LyricFacade extends AbstractFacade<Lyric> {
 
-    @PersistenceContext(unitName = "GetPlayWebPU")
+    @PersistenceContext(unitName = "GetPlayWebPU3")
     private EntityManager em;
 
     @Override
@@ -126,22 +126,22 @@ public class LyricFacade extends AbstractFacade<Lyric> {
 
     }
 
-    public int soapExist(String artist, String title) {
+    public boolean soapExist(String artist, String title) {
         String s = soapResult(artist, title);
 
         if (s.equals("Not found")) {
-            return 0;
+            return false;
         } else {
-            return 1;
+            return true;
         }
     }
 
-    public int restExist(String artist, String title) {
+    public boolean restExist(String artist, String title) {
         String s = restResult(artist, title);
         if (s.equals("Not found")) {
-            return 0;
+            return false;
         } else {
-            return 1;
+            return true;
         }
     }
 
