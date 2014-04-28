@@ -23,6 +23,7 @@ import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.Part;
+import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
 
@@ -50,6 +51,8 @@ public class RequestMusicMb implements Serializable {
     private String url;
     private String urlTop;
     private List<Music> musics2;
+    @Inject
+    private LyricFacade lyricFacade;
 
     /**
      * Creates a new instance of MusicMb
@@ -69,7 +72,7 @@ public class RequestMusicMb implements Serializable {
         ExternalContext ext = ctxt.getExternalContext();
         this.url = "http://" + ext.getRequestServerName() + ":" + ext.getRequestServerPort()
                 + ext.getApplicationContextPath() + "/topmusic?topten=all&" + randomint();
-        
+
         this.urlTop = "http://" + ext.getRequestServerName() + ":" + ext.getRequestServerPort()
                 + ext.getApplicationContextPath() + "/topmusic?topten=topten";
     }
@@ -109,7 +112,11 @@ public class RequestMusicMb implements Serializable {
             }
             outputStream.close();
             inputStream.close();
-            music_ejb.addMusic(music, user.getUser(), musicPath);
+
+            int rest = lyricFacade.restExist(music.getArtist(), music.getTitle());
+            int soap = lyricFacade.soapExist(music.getArtist(), music.getTitle());
+
+            music_ejb.addMusic(music, user.getUser(), musicPath, rest, soap);
 
             message = "Music " + music.getTitle() + " created with success.";
 
@@ -389,6 +396,14 @@ public class RequestMusicMb implements Serializable {
 
     public void setUrlTop(String urlTop) {
         this.urlTop = urlTop;
+    }
+
+    public LyricFacade getLyricFacade() {
+        return lyricFacade;
+    }
+
+    public void setLyricFacade(LyricFacade lyricFacade) {
+        this.lyricFacade = lyricFacade;
     }
 
 }

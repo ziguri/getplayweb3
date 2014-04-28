@@ -140,6 +140,16 @@ public class LyricController implements Serializable {
 
     }
 
+    public boolean soapExist(Music m) {
+        String s = soapResult(m);
+        return !s.equals("Not found");
+    }
+
+    public boolean restExist(Music m) {
+        String s = restResult(m);
+        return !s.equals("Not found");
+    }
+
     public String addLyric() {
         lyricFacade.addLyric(lyric, musicSelected, loggedUser.getUser());
         return "listAllMusics";

@@ -45,9 +45,13 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @param m
      * @param u
      * @param path
+     * @param rest
+     * @param soap
      */
-    public void addMusic(Music m, AppUser u, String path) {
+    public void addMusic(Music m, AppUser u, String path, int rest, int soap) {
         try {
+            m.setRestLyric(rest);
+            m.setSoapLyric(soap);
             m.setMusic_path(path);
             m.setUser(u);
             this.create(m);

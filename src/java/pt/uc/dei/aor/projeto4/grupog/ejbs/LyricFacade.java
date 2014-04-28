@@ -5,14 +5,25 @@
  */
 package pt.uc.dei.aor.projeto4.grupog.ejbs;
 
+import WebServiceSoap.LyricWikiPortType_Stub;
+import WebServiceSoap.LyricWiki_Impl;
+import WebServiceSoap.LyricsResult;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import pt.uc.dei.aor.projeto4.grupog.entities.AppUser;
 import pt.uc.dei.aor.projeto4.grupog.entities.Lyric;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
+import pt.uc.dei.aor.projeto4.grupog.managebeans.GeneralController;
 
 /**
  *
@@ -78,6 +89,60 @@ public class LyricFacade extends AbstractFacade<Lyric> {
 
         l.setFullLyric(fullLyric);
         this.edit(l);
+    }
+
+    private static LyricWikiPortType_Stub createProxy() {
+        return (LyricWikiPortType_Stub) (new LyricWiki_Impl().getLyricWikiPort());
+    }
+
+    /**
+     * Return the result using SOAP web service.
+     *
+     * @param artist
+     * @param m
+     * @param title
+     * @return
+     */
+    public String soapResult(String artist, String title) {
+
+        try {
+            LyricWikiPortType_Stub lw = createProxy();
+            LyricsResult lr = lw.getSong(artist, title);
+            return lr.getLyrics();
+        } catch (Exception ex) {
+            Logger.getLogger(GeneralController.class.getName()).log(Level.SEVERE, null, ex);
+            return "Lyric not found in http://lyrics.wikia.com/";
+        }
+
+    }
+
+    public String restResult(String artist, String title) {
+
+        WebTarget target = ClientBuilder.newClient().target("http://lyrics.wikia.com/api.php");
+        Invocation invocation = target.queryParam("func", "getSong").queryParam("fmt", "text")
+                .queryParam("artist", artist).queryParam("song", title).request(MediaType.TEXT_PLAIN).buildGet();
+        Response response = invocation.invoke();
+        return response.readEntity(String.class);
+
+    }
+
+    public int soapExist(String artist, String title) {
+        String s = soapResult(artist, title);
+
+        if (s.equals("Not found")) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public int restExist(String artist, String title) {
+        String s = restResult(artist, title);
+        if (s.equals("Not found")) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
 }
