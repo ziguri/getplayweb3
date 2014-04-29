@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -26,8 +27,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "lyric")
 @NamedQueries({
-    @NamedQuery(name = "appuser.findLyric", query = "SELECT l.fullLyric FROM Lyric l WHERE l.music=:mus and l.user=:us"),
-    @NamedQuery(name = "appuser.findObjectLyric", query = "SELECT l FROM Lyric l WHERE l.music=:mus and l.user=:us"),})
+    @NamedQuery(name = "lyric.findLyric", query = "SELECT l.fullLyric FROM Lyric l WHERE l.music=:mus and l.user=:us"),
+    @NamedQuery(name = "lyric.findObjectLyric", query = "SELECT l FROM Lyric l WHERE l.music=:mus and l.user=:us"),
+    @NamedQuery(name = "lyric.findLyricByMusic", query = "SELECT l FROM Lyric l WHERE l.music=:mus"),
+    @NamedQuery(name = "lyric.deleteLyricByMusic", query = "DELETE FROM Lyric l WHERE l.music=:mus"),})
 public class Lyric implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +40,8 @@ public class Lyric implements Serializable {
 
     @OneToOne
     private AppUser user;
-    @OneToOne
+
+    @ManyToOne
     private Music music;
 
     @Lob

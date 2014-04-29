@@ -8,6 +8,7 @@ package pt.uc.dei.aor.projeto4.grupog.ejbs;
 import WebServiceSoap.LyricWikiPortType_Stub;
 import WebServiceSoap.LyricWiki_Impl;
 import WebServiceSoap.LyricsResult;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -53,7 +54,7 @@ public class LyricFacade extends AbstractFacade<Lyric> {
      */
     public String getLyric(Music m, AppUser u) {
 
-        Query q = em.createNamedQuery("appuser.findLyric");
+        Query q = em.createNamedQuery("lyric.findLyric");
         q.setParameter("mus", m).setParameter("us", u);
 
         try {
@@ -64,9 +65,16 @@ public class LyricFacade extends AbstractFacade<Lyric> {
 
     }
 
+    /**
+     * Return the Object Lyric from database
+     *
+     * @param m
+     * @param u
+     * @return
+     */
     public Lyric getObjectLyric(Music m, AppUser u) {
 
-        Query q = em.createNamedQuery("appuser.findObjectLyric");
+        Query q = em.createNamedQuery("lyric.findObjectLyric");
         q.setParameter("mus", m).setParameter("us", u);
 
         try {
@@ -74,6 +82,30 @@ public class LyricFacade extends AbstractFacade<Lyric> {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    /**
+     * Return all the Lyric´s with that music reference
+     *
+     * @param m
+     * @return
+     */
+    public List<Lyric> getAllLyricsOfMusic(Music m) {
+
+        Query q = em.createNamedQuery("lyric.findLyricByMusic");
+        q.setParameter("mus", m);
+        return (List<Lyric>) q.getResultList();
+    }
+
+    /**
+     * Remove all Lyric entries with music reference
+     *
+     * @param m
+     */
+    public void deleteLyricByMusic(Music m) {
+
+        Query q = em.createNamedQuery("lyric.deleteLyricByMusic");
+        q.setParameter("mus", m);
     }
 
     public void addLyric(String lyric, Music m, AppUser u) {

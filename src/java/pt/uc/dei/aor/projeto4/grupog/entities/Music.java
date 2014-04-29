@@ -7,6 +7,7 @@ package pt.uc.dei.aor.projeto4.grupog.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,8 +37,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Music.findMusicByPlaylist", query = "SELECT m FROM Music m WHERE m.playlists = :playlists"),
     @NamedQuery(name = "Music.findAllFromUser", query = "SELECT m FROM Music m WHERE m.user = :user"),
     @NamedQuery(name = "Music.findMostPopularMusics", query = "SELECT m FROM Music m WHERE SIZE(m.playlists)>0 ORDER BY SIZE(m.playlists) DESC "),
-    @NamedQuery(name = "Music.findRestLyric", query = "SELECT m.restLyric FROM Music m WHERE m.music_id = :mus"),
-    @NamedQuery(name = "Music.findSoapLyric", query = "SELECT m.soapLyric FROM Music m WHERE m.music_id = :mus"),})
+    @NamedQuery(name = "Music.findRestLyric", query = "SELECT m FROM Music m WHERE m.restLyric = false"),
+    @NamedQuery(name = "Music.findSoapLyric", query = "SELECT m FROM Music m WHERE m.soapLyric = false"),})
 
 public class Music implements Serializable, Comparable<Music> {
 
@@ -80,6 +82,9 @@ public class Music implements Serializable, Comparable<Music> {
     @Column(nullable = false, name = "RESTLYRIC")
     private boolean restLyric;
 
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lyric> lyric;
+
     public Music() {
     }
 
@@ -89,6 +94,14 @@ public class Music implements Serializable, Comparable<Music> {
 
     public void setId(Integer id) {
         this.music_id = id;
+    }
+
+    public List<Lyric> getLyric() {
+        return lyric;
+    }
+
+    public void setLyric(List<Lyric> lyric) {
+        this.lyric = lyric;
     }
 
     public Integer getMusic_id() {

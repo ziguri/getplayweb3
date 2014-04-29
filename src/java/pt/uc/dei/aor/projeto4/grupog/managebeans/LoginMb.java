@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import pt.uc.dei.aor.projeto4.grupog.classes.EncryptMD5;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.AppUserFacade;
+import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.AppUser;
 import pt.uc.dei.aor.projeto4.grupog.exceptions.DuplicateEmailException;
 
@@ -26,6 +27,8 @@ public class LoginMb {
 
     @Inject
     private AppUserFacade user_ejb;
+    @Inject
+    private MusicFacade musicFacade;
     private AppUser user;
     private String email;
     private String password;
@@ -63,6 +66,8 @@ public class LoginMb {
         try {
 
             logado.setUser(us);
+            musicFacade.verifySoapLyric();
+            musicFacade.verifyRestLyric();
             return "listAllMusics";
 
         } catch (NullPointerException ex) {

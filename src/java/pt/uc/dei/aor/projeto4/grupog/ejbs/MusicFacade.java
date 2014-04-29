@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import pt.uc.dei.aor.projeto4.grupog.entities.AppUser;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
 import pt.uc.dei.aor.projeto4.grupog.entities.Playlist;
@@ -27,6 +28,9 @@ public class MusicFacade extends AbstractFacade<Music> {
 
     @Inject
     private PlaylistFacade playlistEjb;
+    @Inject
+    private LyricFacade lyricFacade;
+
     @PersistenceContext(unitName = "GetPlayWebPU3")
     private EntityManager em;
 
@@ -103,13 +107,14 @@ public class MusicFacade extends AbstractFacade<Music> {
      */
     public void removeMusic(Music music) {
         try {
+            //Delete all the Lyrics with that music in data base
 
             for (int i = 0; i < music.getPlaylists().size(); i++) {
 
                 music.getPlaylists().get(i).setSize(music.getPlaylists().get(i).getSize() - 1);
                 playlistEjb.edit(music.getPlaylists().get(i));
             }
-
+            lyricFacade.deleteLyricByMusic(music);
             remove(music);
 
             File file = new File(music.getMusic_path());
@@ -177,6 +182,8 @@ public class MusicFacade extends AbstractFacade<Music> {
 
     /**
      * most popular musics
+     *
+     * @return
      */
     public List<Music> showMostPopularMusics() {
 
@@ -203,6 +210,47 @@ public class MusicFacade extends AbstractFacade<Music> {
             Logger.getLogger(MusicFacade.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    /**
+     * Each time the program run, this method verify if the lyric exist in the
+     * SOAP webservice. If exist, the music will be edited and persisted to db.
+     */
+    public void verifySoapLyric() {
+
+        Query q = em.createNamedQuery("Music.findSoapLyric");
+        List<Music> musics = q.getResultList();
+
+        for (Music m : musics) {
+
+            if (lyricFacade.soapExist(m.getArtist(), m.getTitle())) {
+
+                m.setSoapLyric(true);
+                this.edit(m);
+            }
+        }
+
+    }
+
+    /**
+     * Each time the program run, this method verify if the lyric exist in the
+     * REST webservice. If exist, the music will be edited and persisted to db.
+     */
+    public void verifyRestLyric() {
+
+        Query q = em.createNamedQuery("Music.findRestLyric");
+        List<Music> musics = q.getResultList();
+
+        for (Music m : musics) {
+
+            if (lyricFacade.soapExist(m.getArtist(), m.getTitle())) {
+
+                m.setRestLyric(true);
+                this.edit(m);
+
+            }
+        }
+
     }
 
 }
