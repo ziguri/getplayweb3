@@ -60,7 +60,7 @@ public class LyricFacade extends AbstractFacade<Lyric> {
         try {
             return (String) q.getSingleResult();
         } catch (NoResultException e) {
-            return "";
+            return null;
         }
 
     }
@@ -108,9 +108,19 @@ public class LyricFacade extends AbstractFacade<Lyric> {
         q.setParameter("mus", m);
     }
 
+    /**
+     * Add lyric to database when
+     *
+     * @param lyric
+     * @param m
+     * @param u
+     */
     public void addLyric(String lyric, Music m, AppUser u) {
 
         Lyric l = new Lyric();
+        m.setRestLyric(true);
+        m.setSoapLyric(true);
+
         l.setFullLyric(lyric);
         l.setMusic(m);
         l.setUser(u);

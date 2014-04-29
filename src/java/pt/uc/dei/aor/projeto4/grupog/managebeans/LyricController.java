@@ -107,6 +107,11 @@ public class LyricController implements Serializable {
         }
     }
 
+    public void changeMusicSelected(Music m) {
+
+        this.musicSelected = m;
+    }
+
     private static LyricWikiPortType_Stub createProxy() {
         return (LyricWikiPortType_Stub) (new LyricWiki_Impl().getLyricWikiPort());
     }

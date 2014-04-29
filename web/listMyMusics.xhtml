@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!--<?xml version="1.0" encoding="UTF-8"?>
+
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
--->
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -17,87 +17,195 @@ and open the template in the editor.
         <title>List My Musics</title>
     </h:head>
 
-    <h:body>
+    <h:body>-->
 
-        <ui:composition template="Template/GetPlayTemp.xhtml">
+<ui:composition template="Template/GetPlayTemp.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
 
-            <ui:define name="content">
+    <ui:define name="content">
 
-                <h:form>
-                    <f:view>
-                        <h:form>
-                            <h1><h:outputText value="My Musics"/></h1>
-                            <h:outputLabel value="YOUR PLAYLIST´S:"/>
-                            <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">
-                                <f:selectItems value="#{generalController.myPlaylists()}" var="p" itemLabel="#{p.name}"/>
-                            </h:selectOneMenu>
-                            <h:dataTable value="#{requestMusicMb.myMusicList}" var="music" border="1" cellpadding="2" cellspacing="2" rules="all" styleClass="dataTable"
-                                         headerClass="dataTableTitle">
+        <h:form>
 
-                                <h:column>
-                                    <f:facet name="header">TITLE</f:facet>
-                                        #{music.title}
-                                </h:column>
+            <h1><h:outputText value="My Musics"/></h1>
+            <h:outputLabel value="YOUR PLAYLIST´S:"/>
+            <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">
+                <f:selectItems value="#{generalController.myPlaylists()}" var="p" itemLabel="#{p.name}"/>
+            </h:selectOneMenu>
 
-                                <h:column>
-                                    <f:facet name="header">ARTIST</f:facet>
-                                        #{music.artist}
-                                </h:column>
+        </h:form>
+        <h:form>
+            <h:dataTable value="#{requestMusicMb.myMusicList}" var="music" border="1" cellpadding="2" cellspacing="2" rules="all" styleClass="dataTable"
+                         headerClass="dataTableTitle">
 
-                                <h:column>
-                                    <f:facet name="header">ALBUM</f:facet>
-                                        #{music.album}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header">TITLE</f:facet>
+                        #{music.title}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header">YEAR</f:facet>
-                                        #{music.music_year}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header">ARTIST</f:facet>
+                        #{music.artist}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header">PATH</f:facet>
-                                        #{music.music_path}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header">ALBUM</f:facet>
+                        #{music.album}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header">USER</f:facet>
-                                        #{music.user.name}
-                                </h:column>
+                <h:column>
+                    <f:facet name="header">YEAR</f:facet>
+                        #{music.music_year}
+                </h:column>
 
-                                <h:column>
-                                    <f:facet name="header">EDIT/DELETE</f:facet>
-                                    <h:commandButton type="submit" 
-                                                     value="Edit" 
-                                                     action="#{generalController.editSelectedMusic()}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </h:commandButton>
+                <h:column>
+                    <f:facet name="header">PATH</f:facet>
+                        #{music.music_path}
+                </h:column>
 
-                                    <h:commandButton  type="submit"
-                                                      value="Delete" 
-                                                      action="#{generalController.destroy}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </h:commandButton>
+                <h:column>
+                    <f:facet name="header">USER</f:facet>
+                        #{music.user.name}
+                </h:column>
 
-                                </h:column>
+                <h:column>
+                    <f:facet name="header">EDIT/DELETE</f:facet>
+                    <h:commandButton type="submit" 
+                                     value="Edit" 
+                                     action="#{generalController.editSelectedMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
 
-                                <h:column>
-                                    <f:facet name="header">ADD TO PLAYLIST</f:facet>
-                                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
-                                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
-                                    </h:commandButton>
-                                </h:column>
+                    <h:commandButton  type="submit"
+                                      value="Delete" 
+                                      action="#{generalController.destroy}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
 
-                                <h:column>
-                                    <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
-                                </h:column>
+                </h:column>
 
-                            </h:dataTable>
-                            <br/>
-                            <p></p>
-                        </h:form>
-                    </f:view>
-                </h:form>
-            </ui:define>
-        </ui:composition>
-    </h:body>
-</html>
+                <h:column>
+                    <f:facet name="header">ADD TO PLAYLIST</f:facet>
+                    <h:commandButton type="submit" value="+" action="#{generalController.saveMusic()}" >
+                        <f:setPropertyActionListener target="#{generalController.musicSelected}" value="#{music}" />
+                    </h:commandButton>
+                </h:column>
+
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
+                    <!--                    COM LETRA-->
+                    <p:commandButton rendered="#{music.soapLyric}" disabled="true" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
+                    <!--                    SEM LETRA-->
+                    <p:commandButton rendered="#{!music.soapLyric}" disabled="true" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.soapResult(music)}" oncomplete="PF('soap').show()" update=":soapLy" style="background-color: #F53D0A"/>
+
+
+                </h:column>
+
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">REST</f:facet>
+                    <!--                    COM LETRA-->
+                    <p:commandButton rendered="#{music.restLyric}" disabled="true" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
+                    <!--                    SEM LETRA-->
+                    <p:commandButton rendered="#{!music.restLyric}" disabled="true" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.restResult(music)}" oncomplete="PF('rest').show()" update=":restpLy" style="background-color: #F53D0A"/>
+                </h:column>
+
+                <h:column>      
+                    <f:facet name="header" class="dataTableTitle">Lyric</f:facet>
+                    <!--                    COM LETRA-->
+                    <p:commandButton rendered="#{lyricController.seeLyric(music)!=null}" ajax="true" icon="ui-icon-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
+                    <!--                    SEM LETRA-->
+                    <p:commandButton rendered="#{lyricController.seeLyric(music)==null}" ajax="true" icon="ui-icon-pencil" actionListener="#{lyricController.changeMusicSelected(music)}" oncomplete="PF('without').show()" update=":withoutLy" style="background-color: #F53D0A"/>
+                </h:column>
+
+                <h:column>
+                    <h:commandButton image="resources/images/play.png" action="search.xhtml" class="playBtn"/>
+                </h:column>
+
+            </h:dataTable>
+            <br/>
+            <p></p>
+        </h:form>
+
+
+        <!--        POP UP COM LETRA-->
+        <h:form id="lyWith">
+            <p:dialog header="#{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist} 
+                      Lyric" widgetVar="with" modal="true" height="auto" width="auto">
+
+                <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:365px; height: 450px;"/>
+                <br></br>
+                <br></br>
+
+                <p:commandButton ajax="false" type="submit" value="Save" icon="ui-icon-pencil" 
+                                 actionListener="#{lyricController.editLyric()}"/>
+
+                <p:commandButton ajax="true" type="submit" value="Soap Lyric" icon="ui-icon-search" 
+                                 actionListener="#{lyricController.soapResult(lyricController.musicSelected)}" 
+                                 oncomplete="#{lyricController.lyric}" update=":lyWith:newL"/>
+
+                <p:commandButton ajax="true" type="submit" value="Rest Lyric" icon="ui-icon-search" 
+                                 actionListener="#{lyricController.restResult(lyricController.musicSelected)}" 
+                                 oncomplete="#{lyricController.lyric}" update=":lyWith:newL"/>
+
+                <p:commandButton ajax="false" value="Cancel" onclick="PF('with').hide();"/>
+
+            </p:dialog>
+        </h:form>
+
+        <!--        POP UP SOAP SEM LETRA-->
+        <h:form id="soapLy">
+            <p:dialog header="#{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist} Lyric"  widgetVar="soap" modal="true" height="auto" width="auto">
+                <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/>
+                <br></br>
+                <br></br>
+                <p:commandButton ajax="false" value="Cancel" onclick="PF('soap').hide();"/>
+                <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.addLyric()}"/>
+
+            </p:dialog>
+        </h:form>
+
+
+        <!--        POP UP REST SEM LETRA-->
+        <h:form id="restpLy">
+            <p:dialog header="#{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist} Lyric" widgetVar="rest" modal="true" height="auto" width="auto">
+
+                <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/>
+                <br></br>
+                <br></br>
+                <p:commandButton ajax="false" value="Cancel" onclick="PF('rest').hide();"/>
+                <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.addLyric()}"/>
+
+            </p:dialog>
+        </h:form>
+
+        <!--        POP UP SEM LETRA-->
+        <h:form id="withoutLy">
+            <p:dialog header="Add Manual Lyric to: #{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist}" widgetVar="without" modal="true" height="auto" width="auto">
+
+                <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:365px; height: 450px;"/>
+                <br></br>
+                <br></br>
+
+                <p:commandButton ajax="false" type="submit" value="Save" icon="ui-icon-pencil" 
+                                 actionListener="#{lyricController.addLyric()}"/>
+
+                <p:commandButton ajax="true" type="submit" value="Soap Lyric" icon="ui-icon-search" 
+                                 actionListener="#{lyricController.soapResult(lyricController.musicSelected)}" 
+                                 oncomplete="#{lyricController.lyric}" update=":withoutLy:newL"/>
+
+                <p:commandButton ajax="true" type="submit" value="Rest Lyric" icon="ui-icon-search" 
+                                 actionListener="#{lyricController.restResult(lyricController.musicSelected)}" 
+                                 oncomplete="#{lyricController.lyric}" update=":withoutLy:newL"/>
+
+                <p:commandButton ajax="false" value="Cancel" onclick="PF('with').hide();"/>
+
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+<!--    </h:body>
+</html>-->
