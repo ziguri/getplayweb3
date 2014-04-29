@@ -90,9 +90,9 @@ and open the template in the editor.
                 <h:column>      
                     <f:facet name="header" class="dataTableTitle">SOAP</f:facet>
                     <!--                    COM LETRA-->
-                    <p:commandButton rendered="#{!empty lyricController.seeLyric(music) or lyricController.soapExist(music)}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
+                    <p:commandButton rendered="#{!empty lyricController.seeLyric(music) or music.soapLyric}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
                     <!--                    SEM LETRA-->
-                    <p:commandButton rendered="#{empty lyricController.seeLyric(music) and !lyricController.soapExist(music)}" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.soapResult(music)}" oncomplete="PF('soap').show()" update=":soapLy" style="background-color: #F53D0A"/>
+                    <p:commandButton rendered="#{empty lyricController.seeLyric(music) and !music.soapLyric}" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.soapResult(music)}" oncomplete="PF('soap').show()" update=":soapLy" style="background-color: #F53D0A"/>
 
 
                 </h:column>
@@ -100,9 +100,9 @@ and open the template in the editor.
                 <h:column>      
                     <f:facet name="header" class="dataTableTitle">REST</f:facet>
                     <!--                    COM LETRA-->
-                    <p:commandButton rendered="#{!empty lyricController.seeLyric(music)}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
+                    <p:commandButton rendered="#{!empty lyricController.seeLyric(music) or music.restLyric}" ajax="true" icon="ui-icon-circle-check" actionListener="#{lyricController.seeEditableLyric(music)}" oncomplete="PF('with').show()" update=":lyWith" style="background-color: #45DB00"/>
                     <!--                    SEM LETRA-->
-                    <p:commandButton rendered="#{empty lyricController.seeLyric(music)}" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.restResult(music)}" oncomplete="PF('rest').show()" update=":restpLy" style="background-color: #F53D0A"/>
+                    <p:commandButton rendered="#{empty lyricController.seeLyric(music) and !music.restLyric}" ajax="true" icon="ui-icon-circle-close" actionListener="#{lyricController.restResult(music)}" oncomplete="PF('rest').show()" update=":restpLy" style="background-color: #F53D0A"/>
                 </h:column>
 
             </h:dataTable>
@@ -113,11 +113,39 @@ and open the template in the editor.
         <!--        POP UP COM LETRA-->
         <h:form id="lyWith">
             <p:dialog header="#{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist} Lyric" widgetVar="with" modal="true" height="auto" width="auto">
-                <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/>
-                <br></br>
-                <p:commandButton ajax="false" value="Cancel" onclick="PF('soapW').hide();"/>
-                <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.editLyric()}"/>
 
+
+                <table>
+                    <tr>
+                        <td rowspan="5"><h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <p:commandButton ajax="false" type="submit" value="Save" actionListener="#{lyricController.editLyric()}"/>
+                            <br></br>
+                            <p:commandButton ajax="false" value="Cancel" onclick="PF('soapW').hide();"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                    </tr>
+
+                    <tr>
+
+                    </tr>
+
+                    <tr>
+                        <td style="margin-top: 100%">
+                            <p:commandButton ajax="false" value="Cancel" onclick="PF('soapW').hide();"/>
+                            <br></br>
+                            <p:commandButton ajax="false" value="Cancel" onclick="PF('soapW').hide();"/>
+                        </td>
+                    </tr>
+
+
+                </table>
             </p:dialog>
         </h:form>
 
@@ -136,6 +164,18 @@ and open the template in the editor.
         <!--        POP UP REST SEM LETRA-->
         <h:form id="restpLy">
             <p:dialog header="#{lyricController.musicSelected.title} - #{lyricController.musicSelected.artist} Lyric" widgetVar="rest" modal="true" height="auto" width="auto">
+
+                <table>
+                    <td>
+
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                </table>
+
                 <h:inputTextarea id="newL" value="#{lyricController.lyric}" style="width:250px; height: 450px;"/>
                 <br></br>
                 <p:commandButton ajax="false" value="Cancel" onclick="PF('restW').hide();"/>

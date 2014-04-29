@@ -45,6 +45,9 @@ public class Lyric implements Serializable {
     @Column(length = 100000)
     private String fullLyric;
 
+    public Lyric() {
+    }
+
     public Long getId() {
         return id;
     }

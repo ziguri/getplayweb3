@@ -35,8 +35,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Music.findMusicByPlaylist", query = "SELECT m FROM Music m WHERE m.playlists = :playlists"),
     @NamedQuery(name = "Music.findAllFromUser", query = "SELECT m FROM Music m WHERE m.user = :user"),
     @NamedQuery(name = "Music.findMostPopularMusics", query = "SELECT m FROM Music m WHERE SIZE(m.playlists)>0 ORDER BY SIZE(m.playlists) DESC "),
-    @NamedQuery(name = "Music.findRestLyric", query = "SELECT m.restLyric FROM Music m WHERE m.music_id=:mus"),
-    @NamedQuery(name = "Music.findRestLyric", query = "SELECT m.soapLyric FROM Music m WHERE m.music_id=:mus"),})
+    @NamedQuery(name = "Music.findRestLyric", query = "SELECT m.restLyric FROM Music m WHERE m.music_id = :mus"),
+    @NamedQuery(name = "Music.findSoapLyric", query = "SELECT m.soapLyric FROM Music m WHERE m.music_id = :mus"),})
 
 public class Music implements Serializable, Comparable<Music> {
 

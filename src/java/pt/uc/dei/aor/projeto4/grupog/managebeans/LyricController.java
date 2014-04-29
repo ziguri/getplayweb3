@@ -20,6 +20,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
+import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Lyric;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
 
@@ -35,6 +36,8 @@ public class LyricController implements Serializable {
     private LyricFacade lyricFacade;
     @Inject
     private LoggedUserMb loggedUser;
+    @Inject
+    private MusicFacade musicFacade;
     private Music musicSelected;
     private String lyric;
     private Lyric objLyric;
@@ -97,8 +100,10 @@ public class LyricController implements Serializable {
             this.objLyric = lyricFacade.getObjectLyric(m, loggedUser.getUser());
             this.lyric = objLyric.getFullLyric();
             return lyric;
+
         } catch (Exception e) {
-            return "";
+            lyric = soapResult(m);
+            return lyric;
         }
     }
 
@@ -157,8 +162,14 @@ public class LyricController implements Serializable {
 
     public String editLyric() {
 
-        lyricFacade.editLyric(objLyric, lyric);
-        return "listAllMusics";
+        if (objLyric != null) {
+            lyricFacade.editLyric(objLyric, lyric);
+            return "listAllMusics";
+        } else {
+            lyricFacade.addLyric(lyric, musicSelected, loggedUser.getUser());
+            return "listAllMusics";
+
+        }
 
     }
 
