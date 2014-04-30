@@ -29,7 +29,7 @@ and open the template in the editor.
     <ui:define name="content">
 
         <h:form>
-
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" /> 
             <h1><h:outputText value="My Musics"/></h1>
             <h:outputLabel value="YOUR PLAYLIST´S:"/>
             <h:selectOneMenu value="#{generalController.playlistSelected}" converter="#{generalController}">

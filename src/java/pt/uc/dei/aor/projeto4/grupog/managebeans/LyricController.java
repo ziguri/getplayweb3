@@ -11,6 +11,8 @@ import WebServiceSoap.LyricsResult;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -137,6 +139,12 @@ public class LyricController implements Serializable {
 
     }
 
+    /**
+     * * Return the result using REST web service.
+     *
+     * @param m
+     * @return
+     */
     public String restResult(Music m) {
 
         WebTarget target = ClientBuilder.newClient().target("http://lyrics.wikia.com/api.php");
@@ -150,19 +158,35 @@ public class LyricController implements Serializable {
 
     }
 
+    /**
+     * Verify if Soap webservice Result is available
+     *
+     * @param m
+     * @return
+     */
     public boolean soapExist(Music m) {
         String s = soapResult(m);
         return !s.equals("Not found");
     }
 
+    /**
+     * Verify if Rest webservice result is available
+     *
+     * @param m
+     * @return
+     */
     public boolean restExist(Music m) {
         String s = restResult(m);
         return !s.equals("Not found");
     }
 
-    public String addLyric() {
+    /**
+     *
+     * @return
+     */
+    public void addLyric() {
         lyricFacade.addLyric(lyric, musicSelected, loggedUser.getUser());
-        return "listAllMusics";
+        addMessage("Lyric to " + musicSelected.getTitle() + " - " + musicSelected.getArtist() + " successfully added");
     }
 
     public String editLyric() {
@@ -176,6 +200,26 @@ public class LyricController implements Serializable {
 
         }
 
+    }
+
+    /**
+     * add a new Success message
+     *
+     * @param summary message
+     */
+    public void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success Message", summary);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    /**
+     * add a new error message
+     *
+     * @param summary message
+     */
+    public void errorMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Message", summary);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
 }
