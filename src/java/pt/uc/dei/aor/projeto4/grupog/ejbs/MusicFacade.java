@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -25,20 +26,20 @@ import pt.uc.dei.aor.projeto4.grupog.exceptions.SearchNullException;
  */
 @Stateless
 public class MusicFacade extends AbstractFacade<Music> {
-
+    
     @Inject
     private PlaylistFacade playlistEjb;
     @Inject
     private LyricFacade lyricFacade;
-
+    
     @PersistenceContext(unitName = "GetPlayWebPU3")
     private EntityManager em;
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     public MusicFacade() {
         super(Music.class);
     }
@@ -52,14 +53,15 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @param rest
      * @param soap
      */
-    public void addMusic(Music m, AppUser u, String path, boolean rest, boolean soap) {
+    public void addMusic(Music m, AppUser u, String path, boolean rest, boolean soap, boolean chartRest) {
         try {
             m.setRestLyric(rest);
             m.setSoapLyric(soap);
+            m.setRestChartLyric(chartRest);
             m.setMusic_path(path);
             m.setUser(u);
             this.create(m);
-
+            
         } catch (Exception e) {
             Logger.getLogger(MusicFacade.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -88,7 +90,7 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @return
      */
     public List<Music> showMusicsPlaylist(Playlist p) {
-
+        
         try {
             List<Music> m = (List<Music>) em.createNamedQuery("Music.findMusicByPlaylist").setParameter("playlists", p).getResultList();
             return m;
@@ -110,16 +112,16 @@ public class MusicFacade extends AbstractFacade<Music> {
             //Delete all the Lyrics with that music in data base
 
             for (int i = 0; i < music.getPlaylists().size(); i++) {
-
+                
                 music.getPlaylists().get(i).setSize(music.getPlaylists().get(i).getSize() - 1);
                 playlistEjb.edit(music.getPlaylists().get(i));
             }
             lyricFacade.deleteLyricByMusic(music);
             remove(music);
-
+            
             File file = new File(music.getMusic_path());
             file.delete();
-
+            
         } catch (IndexOutOfBoundsException ex) {
             Logger.getLogger(MusicFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -138,29 +140,29 @@ public class MusicFacade extends AbstractFacade<Music> {
 
         List<Music> m = null;
         try {
-
+            
             if (column.equals("Title")) {
                 m = (List<Music>) em.createNamedQuery("Music.findMusicByTitle").setParameter("word", "%" + word + "%").getResultList();
             }
-
+            
             if (column.equals("Artist")) {
                 m = (List<Music>) em.createNamedQuery("Music.findMusicByArtist").setParameter("word", "%" + word + "%").getResultList();
             }
-
+            
             if (column.equals("ArTi")) {
                 m = (List<Music>) em.createNamedQuery("Music.findMusicByTitleOrArtist").setParameter("word", "%" + word + "%").getResultList();
             }
-
+            
             if (m.isEmpty()) {
                 throw new SearchNullException();
             }
             return m;
-
+            
         } catch (NullPointerException | IllegalStateException ex) {
             Logger.getLogger(MusicFacade.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-
+        
     }
 
     /**
@@ -170,7 +172,7 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @return
      */
     public List<Music> showUserMusics(AppUser u) {
-
+        
         try {
             List<Music> mus = (List<Music>) em.createNamedQuery("Music.findAllFromUser").setParameter("user", u).getResultList();
             return mus;
@@ -186,7 +188,7 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @return
      */
     public List<Music> showMostPopularMusics() {
-
+        
         try {
             List<Music> m = (List<Music>) em.createNamedQuery("Music.findMostPopularMusics").getResultList();
             return m;
@@ -202,7 +204,7 @@ public class MusicFacade extends AbstractFacade<Music> {
      * @return
      */
     public List<Music> showTopTenPopularMusics() {
-
+        
         try {
             List<Music> m = (List<Music>) em.createNamedQuery("Music.findMostPopularMusics").setMaxResults(10).getResultList();
             return m;
@@ -216,20 +218,24 @@ public class MusicFacade extends AbstractFacade<Music> {
      * Each time the program run, this method verify if the lyric exist in the
      * SOAP webservice. If exist, the music will be edited and persisted to db.
      */
-    public void verifySoapLyric() {
-
+    @Asynchronous
+    public void verifySoapLyric() throws InterruptedException {
+        
         Query q = em.createNamedQuery("Music.findSoapLyric");
         List<Music> musics = q.getResultList();
-
+        
         for (Music m : musics) {
-
+            
             if (lyricFacade.soapExist(m.getArtist(), m.getTitle())) {
-
+                
                 m.setSoapLyric(true);
+                m.setRestChartLyric(true);
                 this.edit(m);
+                
+                Thread.sleep(10002);
             }
         }
-
+        
     }
 
     /**
@@ -237,20 +243,19 @@ public class MusicFacade extends AbstractFacade<Music> {
      * REST webservice. If exist, the music will be edited and persisted to db.
      */
     public void verifyRestLyric() {
-
+        
         Query q = em.createNamedQuery("Music.findRestLyric");
         List<Music> musics = q.getResultList();
-
+        
         for (Music m : musics) {
-
-            if (lyricFacade.soapExist(m.getArtist(), m.getTitle())) {
-
+            
+            if (lyricFacade.restExist(m.getArtist(), m.getTitle())) {
+                
                 m.setRestLyric(true);
                 this.edit(m);
-
+                
             }
         }
-
     }
-
+    
 }

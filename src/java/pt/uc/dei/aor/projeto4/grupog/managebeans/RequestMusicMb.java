@@ -23,6 +23,9 @@ import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.Part;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import org.xml.sax.SAXException;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
@@ -87,10 +90,14 @@ public class RequestMusicMb implements Serializable {
      * the byte[] to the new location path and invoke the method addMusic from
      * Music EJB, in order to add the music reference to the DB.
      *
+     * @return
      * @throws FileNotFoundException
      * @throws IOException
+     * @throws javax.xml.xpath.XPathExpressionException
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws org.xml.sax.SAXException
      */
-    public String addMusic() throws FileNotFoundException, IOException {
+    public String addMusic() throws FileNotFoundException, IOException, XPathExpressionException, ParserConfigurationException, SAXException {
 
         try {
 
@@ -116,7 +123,7 @@ public class RequestMusicMb implements Serializable {
             boolean rest = lyricFacade.restExist(music.getArtist(), music.getTitle());
             boolean soap = lyricFacade.soapExist(music.getArtist(), music.getTitle());
 
-            music_ejb.addMusic(music, user.getUser(), musicPath, rest, soap);
+            music_ejb.addMusic(music, user.getUser(), musicPath, rest, soap, soap);
 
             message = "Music " + music.getTitle() + " created with success.";
 

@@ -8,6 +8,11 @@ package pt.uc.dei.aor.projeto4.grupog.managebeans;
 import WebServiceSoap.LyricWikiPortType_Stub;
 import WebServiceSoap.LyricWiki_Impl;
 import WebServiceSoap.LyricsResult;
+import chartLyricsWebService.Apiv1;
+import chartLyricsWebService.GetLyricResult;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +26,10 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.ws.WebServiceRef;
+import javax.xml.xpath.XPathExpressionException;
+import org.xml.sax.SAXException;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.LyricFacade;
 import pt.uc.dei.aor.projeto4.grupog.ejbs.MusicFacade;
 import pt.uc.dei.aor.projeto4.grupog.entities.Lyric;
@@ -33,6 +42,9 @@ import pt.uc.dei.aor.projeto4.grupog.entities.Music;
 @Named
 @ViewScoped
 public class LyricController implements Serializable {
+
+    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/api.chartlyrics.com/apiv1.asmx.wsdl")
+    private Apiv1 service;
 
     @Inject
     private LyricFacade lyricFacade;
@@ -114,6 +126,11 @@ public class LyricController implements Serializable {
         this.musicSelected = m;
     }
 
+    /**
+     * Create LyricWiki proxy
+     *
+     * @return
+     */
     private static LyricWikiPortType_Stub createProxy() {
         return (LyricWikiPortType_Stub) (new LyricWiki_Impl().getLyricWikiPort());
     }
@@ -140,7 +157,7 @@ public class LyricController implements Serializable {
     }
 
     /**
-     * * Return the result using REST web service.
+     * Return the result using REST web service returning text.
      *
      * @param m
      * @return
@@ -154,6 +171,35 @@ public class LyricController implements Serializable {
 
         this.musicSelected = m;
         this.lyric = response.readEntity(String.class);
+        return lyric;
+
+    }
+
+    /**
+     * ChartLyrics SoapResult
+     *
+     */
+    /**
+     * Return the result using REST web service returning Json
+     *
+     * @param m
+     * @return
+     */
+    public String restResultJson(Music m) {
+
+        String artist = m.getArtist().replace(" ", "_");
+        String song = m.getTitle().replace(" ", "_");
+
+        WebTarget target = ClientBuilder.newClient().target("http://lyrics.wikia.com/api.php");
+        Invocation invocation = target.queryParam("func", "getSong").queryParam("fmt", "realjson")
+                .queryParam("artist", artist).queryParam("song", song).request(MediaType.TEXT_PLAIN).buildGet();
+        Response response = invocation.invoke();
+
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(response.readEntity(String.class)).getAsJsonObject();
+        this.lyric = json.get("lyrics").getAsString();
+        this.musicSelected = m;
+
         return lyric;
 
     }
@@ -189,14 +235,18 @@ public class LyricController implements Serializable {
         addMessage("Lyric to " + musicSelected.getTitle() + " - " + musicSelected.getArtist() + " successfully added");
     }
 
-    public String editLyric() {
+    /**
+     * Edit existente lyric in database
+     */
+    public void editLyric() {
 
         if (objLyric != null) {
             lyricFacade.editLyric(objLyric, lyric);
-            return "listAllMusics";
+            addMessage("Lyric to " + musicSelected.getTitle() + " - " + musicSelected.getArtist() + " successfully edited");
+
         } else {
             lyricFacade.addLyric(lyric, musicSelected, loggedUser.getUser());
-            return "listAllMusics";
+            addMessage("Lyric to " + musicSelected.getTitle() + " - " + musicSelected.getArtist() + " successfully added");
 
         }
 
@@ -212,14 +262,35 @@ public class LyricController implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
+    private GetLyricResult searchLyricDirect(Music m) {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        chartLyricsWebService.Apiv1Soap port = service.getApiv1Soap();
+        return port.searchLyricDirect(m.getArtist(), m.getTitle());
+    }
+
     /**
-     * add a new error message
+     * Find and return lyric using the rest webservice in chartlyrics
      *
-     * @param summary message
+     * @param m
+     * @return
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
      */
-    public void errorMessage(String summary) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Message", summary);
-        FacesContext.getCurrentInstance().addMessage(null, message);
+    public String chartRestLyric(Music m) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+
+        this.musicSelected = m;
+        this.lyric = lyricFacade.chartRestLyric(m);
+        return lyric;
+    }
+
+    public String chartSoapResult(Music m) {
+
+        this.musicSelected = m;
+        this.lyric = searchLyricDirect(m).getLyric();
+        return lyric;
     }
 
 }

@@ -8,6 +8,10 @@ package pt.uc.dei.aor.projeto4.grupog.ejbs;
 import WebServiceSoap.LyricWikiPortType_Stub;
 import WebServiceSoap.LyricWiki_Impl;
 import WebServiceSoap.LyricsResult;
+import chartLyricsWebService.Apiv1;
+import chartLyricsWebService.GetLyricResult;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +25,16 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.ws.WebServiceRef;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import pt.uc.dei.aor.projeto4.grupog.entities.AppUser;
 import pt.uc.dei.aor.projeto4.grupog.entities.Lyric;
 import pt.uc.dei.aor.projeto4.grupog.entities.Music;
@@ -41,8 +55,30 @@ public class LyricFacade extends AbstractFacade<Lyric> {
         return em;
     }
 
+    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/api.chartlyrics.com/apiv1.asmx.wsdl")
+    private Apiv1 service;
+
+    private String artist;
+    private String title;
+
     public LyricFacade() {
         super(Lyric.class);
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -168,23 +204,78 @@ public class LyricFacade extends AbstractFacade<Lyric> {
 
     }
 
-    public boolean soapExist(String artist, String title) {
-        String s = soapResult(artist, title);
+    private GetLyricResult searchLyricDirect(String artist, String title) {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        chartLyricsWebService.Apiv1Soap port = service.getApiv1Soap();
+        this.artist = artist;
+        this.title = title;
+        return port.searchLyricDirect(artist, title);
+    }
 
-        if (s.equals("Not found")) {
-            return false;
-        } else {
-            return true;
-        }
+    public String chartSoapResult(String artist, String title) {
+
+        return searchLyricDirect(artist, title).getLyric();
+    }
+
+    /**
+     * Find and return lyric using the rest webservice in chartlyrics
+     *
+     * @param m
+     * @return
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     */
+    public String chartRestLyric(Music m) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+
+//        try {
+        String xml = ClientBuilder.newClient().target("http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect")
+                .queryParam("artist", m.getArtist())
+                .queryParam("song", m.getTitle())
+                .request(MediaType.TEXT_PLAIN)
+                .get(String.class);
+
+        InputSource source = new InputSource(new StringReader(xml));
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(source);
+
+        XPathFactory xpathFactory = XPathFactory.newInstance();
+        XPath xpath = xpathFactory.newXPath();
+
+        String status = xpath.evaluate("/GetLyricResult/Lyric", document);
+
+        return status;
+//        } catch (Exception e) {
+//
+//            return "Please wait 10 sec´s";
+//        }
+    }
+
+    public boolean chartRestExist(Music m) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+
+        String s = chartRestLyric(m);
+        return !s.isEmpty();
+    }
+
+    public boolean soapExist(String artist, String title) {
+        //String s = soapResult(artist, title); Método para verificar no wikia 
+        String s = chartSoapResult(artist, title);
+        return !s.isEmpty();
+    }
+
+    public boolean soapExistDb(String artist, String title) {
+        String s = soapResult(artist, title);
+        //String s = chartSoapResult(artist, title);
+        return !s.isEmpty();
     }
 
     public boolean restExist(String artist, String title) {
         String s = restResult(artist, title);
-        if (s.equals("Not found")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !s.equals("Not found");
     }
 
 }

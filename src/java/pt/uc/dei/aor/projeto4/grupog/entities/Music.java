@@ -82,6 +82,9 @@ public class Music implements Serializable, Comparable<Music> {
     @Column(nullable = false, name = "RESTLYRIC")
     private boolean restLyric;
 
+    @Column(nullable = false, name = "RESTCHARTLYRIC")
+    private boolean restChartLyric;
+
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lyric> lyric;
 
@@ -182,6 +185,14 @@ public class Music implements Serializable, Comparable<Music> {
 
     public void setRestLyric(boolean restLyric) {
         this.restLyric = restLyric;
+    }
+
+    public boolean isRestChartLyric() {
+        return restChartLyric;
+    }
+
+    public void setRestChartLyric(boolean restChartLyric) {
+        this.restChartLyric = restChartLyric;
     }
 
     @Override
